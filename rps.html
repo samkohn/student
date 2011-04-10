@@ -1,0 +1,180 @@
+<html>
+    <head>
+
+        <style type="text/css">
+            body {
+                text-align: center;
+                font-family: sans-serif;
+                padding-top: 100px;
+            }
+            a {
+                display: inline-block;
+                width: 300px;
+                padding: 100px 0;
+                background: #ccc;
+                border-radius: 10px;
+                margin: 10px;
+                color: #888;
+                text-decoration: none;
+                font-size: 40px;
+                font-weight: bold;
+            }
+
+            a#reveal {
+                padding: 20px 0;
+                font-size: 30px;
+                width: 200px;
+                background: #fcc;
+                color: #a88;
+                margin-bottom: 30px;
+            }
+
+            .selected {
+                box-shadow: 0 0 20px #f00;
+            }
+
+            #hWins, #cWins {
+                font-size: 40px;
+                margin: 30px;
+                padding: 10px;
+                display: inline-block;
+                color: #aaa;
+            }
+
+            #cWins::before {
+                content: "comp: ";
+            }
+
+            #hWins::before {
+                content: "human: ";
+            }
+        </style>
+
+        <script type="text/javascript"
+            src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js">
+        </script>
+        <script type="text/javascript" src="vec.js"></script>
+        <script type="text/javascript" src="ngram.js"></script>
+        <script type="text/javascript" src="student.js"></script>
+        <script type="text/javascript" src="student-client.js"></script>
+
+        <script type="text/javascript">
+
+            var ROCK = 0,
+                PAPER = 1,
+                SCISSORS = 2;
+
+            var win = 0,
+                loss = 0;
+
+            var hist = [];
+
+            /* ML STUFF */
+
+            var GRAMSIZE = 2;
+
+            var doc = '0 0 0 1 0 2 1 0 1 1 1 2 2 0 2 1 2 2';
+            var dict = ngram.dict(doc.split(' '), GRAMSIZE);
+
+            var model = new MultinomialStudent(3, dict.length);
+
+            function predict() {
+
+                var feats = ngram.features(hist.slice(0, GRAMSIZE), dict, GRAMSIZE);
+                var guess = model.classify(feats);
+
+                return chooseOpposing(guess);
+
+            }
+
+            function play(them) {
+
+                me = predict();
+
+                reveal();
+
+                score(me, them);
+
+                var feats = ngram.features(hist.slice(0, GRAMSIZE), dict, GRAMSIZE);
+                model.update(them, feats);
+                hist.unshift(them);
+            }
+
+            /* END ML STUFF */
+
+            function score(me, them) {
+
+                if(me == 0) {
+                    if(them == 1) {
+                        loss += 1;
+                    } else if(them == 2) {
+                        win += 1;
+                    }
+                } else if(me == 1) {
+                    if(them == 2) {
+                        loss += 1;
+                    } else if(them == 0) {
+                        win += 1;
+                    }
+                } else {
+                    if(them == 0) {
+                        loss += 1;
+                    } else if(them == 1) {
+                        win += 1;
+                    }
+                }
+
+                $('#cWins').text(win);
+                $('#hWins').text(loss);
+
+            }
+
+            function chooseOpposing(guess) {
+                if(guess == 0)
+                    return 1;
+                if(guess == 1)
+                    return 2;
+                else
+                    return 0;
+            }
+
+            function reveal() {
+                var elem;
+                var guess = predict();
+                if(guess == 0) {
+                    elem = '#rock';
+                } else if(guess == 1) {
+                    elem = '#paper';
+                } else {
+                    elem = '#scissors';
+                }
+
+                $('a').removeClass('selected');
+                $(elem).addClass('selected');
+                setTimeout(function() {
+                    $(elem).removeClass('selected');
+                }, 400);
+            }
+
+
+        </script>
+
+    </head>
+
+    <body>
+
+        <a id="reveal" onclick="reveal(); return false;" href="#">reveal</a>
+
+        <br />
+
+        <a id="rock" onmousedown="play(0); return false;" href="#">rock</a>
+        <a id="paper" onmousedown="play(1); return false;" href="#">paper</a>
+        <a id="scissors" onmousedown="play(2); return false;" href="#">scissors</a>
+
+        <br />
+
+        <span id="cWins">0</span>
+        <span id="hWins">0</span>
+
+    </body>
+</html>

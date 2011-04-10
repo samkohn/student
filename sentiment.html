@@ -1,0 +1,50 @@
+<html>
+    <head>
+
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>  
+
+        <script type="text/javascript" src="DAL.js"></script>
+
+        <script type="text/javascript" src="http://localhost:8000/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="ngram.js"></script>
+        <script type="text/javascript" src="student.js"></script>
+        <script type="text/javascript" src="student-client.js"></script>
+
+        <script type="text/javascript">
+
+            var dict = ngram.dict(str.split(' '), 1);
+            var model = new MultinomialRemoteStudent('sentiment', function(data) {
+                alert(JSON.stringify(data));
+            });
+
+            model.initialize(2, dict.length);
+
+            function vote(label) {
+                var text = $('textarea').val();
+                features = ngram.features(text.split(" "), dict, 1);
+                model.update(label, features);
+            }
+
+            function classify() {
+                var text = $('textarea').val();
+                features = ngram.features(text.split(" "), dict, 1);
+                model.classify(features);
+            }
+
+        </script>
+
+    </head>
+
+
+
+
+    <body>
+
+        <textarea>Type something sentimental here.</textarea>
+
+        <a href="#" onclick="vote(0); return false;">POSITIVE</a>
+        <a href="#" onclick="vote(1); return false;">NEGATIVE</a>
+        <a href="#" onclick="classify(); return false;">CLASSIFY</a>
+
+    </body>
+</html>
