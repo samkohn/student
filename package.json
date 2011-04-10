@@ -1,0 +1,13 @@
+{
+    "name": "student",
+    "description": "JS machine learning for client and server.",
+    "version": "0.1.0",
+    "author": "Jacob Andreas <jda2129@columbia.edu>",
+    "main": "./student-server.js",
+    "engines": {"node": "*"},
+    "dependencies": {
+        "express": "",
+        "redis": "",
+        "socket.io": ""
+    }
+}
