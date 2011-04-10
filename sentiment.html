@@ -13,11 +13,20 @@
         <script type="text/javascript">
 
             var dict = ngram.dict(str.split(' '), 1);
-            var model = new MultinomialRemoteStudent('sentiment', function(data) {
-                alert(JSON.stringify(data));
+            var model = new MultinomialRemoteStudent('sentiment', function(result) {
+                if(result.data == 0) {
+                    $('a').removeClass('flash');
+                    $('#positive').addClass('flash');
+                } else {
+                    $('a').removeClass('flash');
+                    $('#negative').addClass('flash');
+                }
+                setTimeout(function() {
+                    $('a').removeClass('flash');
+                }, 600);
             });
 
-            model.initialize(2, dict.length);
+            //model.initialize(2, dict.length);
 
             function vote(label) {
                 var text = $('textarea').val();
@@ -33,6 +42,72 @@
 
         </script>
 
+        <style type="text/css">
+
+            body {
+                text-align: center;
+                font-family: sans-serif;
+                padding-top: 100px;
+            }
+
+            textarea {
+                width: 500px;
+                height: 300px;
+                background: #eee;
+                box-shadow: inset 0 2px 9px rgba(0,0,0,0.3);
+                border: 0;
+                padding: 10px;
+                border-radius: 8px;
+                font-size: 30px;
+                font-family: sans-serif;
+            }
+
+            a {
+                text-decoration: none;
+                padding: 30px 5px;
+                width: 100px;
+                display: inline-block;
+                color: #222;
+                font-weight: bold;
+                border-radius: 6px;
+                margin: 15px 6px;
+                box-shadow: 0 3px 4px rgba(0,0,0,0.6);
+            }
+
+            a#positive {
+                background: #cfc;
+            }
+
+            a#positive:active {
+                background: #7f7;
+            }
+
+            a#negative {
+                background: #fcc;
+            } 
+
+            a#negative:active {
+                background: #f77;
+            }
+
+            a#classify {
+                background: #ccf;
+            }
+
+            a#classify:active {
+                background: #77f;
+            }
+
+            a#positive.flash {
+                box-shadow: 0 0 15px #0a0;
+            }
+
+            a#negative.flash {
+                box-shadow: 0 0 15px #a00;
+            }
+
+        </style>
+
     </head>
 
 
@@ -42,9 +117,11 @@
 
         <textarea>Type something sentimental here.</textarea>
 
-        <a href="#" onclick="vote(0); return false;">POSITIVE</a>
-        <a href="#" onclick="vote(1); return false;">NEGATIVE</a>
-        <a href="#" onclick="classify(); return false;">CLASSIFY</a>
+        <br />
+
+        <a id="positive" href="#" onclick="vote(0); return false;">POSITIVE</a>
+        <a id="negative" href="#" onclick="vote(1); return false;">NEGATIVE</a>
+        <a id="classify" href="#" onclick="classify(); return false;">CLASSIFY</a>
 
     </body>
 </html>

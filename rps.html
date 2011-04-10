@@ -14,10 +14,15 @@
                 background: #ccc;
                 border-radius: 10px;
                 margin: 10px;
-                color: #888;
+                color: #333;
                 text-decoration: none;
                 font-size: 40px;
                 font-weight: bold;
+                box-shadow: 0 3px 4px rgba(0,0,0,0.4);
+            }
+
+            a:active {
+                background: #999;
             }
 
             a#reveal {
@@ -25,7 +30,7 @@
                 font-size: 30px;
                 width: 200px;
                 background: #fcc;
-                color: #a88;
+                color: #a00;
                 margin-bottom: 30px;
             }
 
@@ -38,7 +43,7 @@
                 margin: 30px;
                 padding: 10px;
                 display: inline-block;
-                color: #aaa;
+                color: #555;
             }
 
             #cWins::before {
@@ -73,15 +78,15 @@
 
             var GRAMSIZE = 2;
 
-            var doc = '0 0 0 1 0 2 1 0 1 1 1 2 2 0 2 1 2 2';
-            var dict = ngram.dict(doc.split(' '), GRAMSIZE);
+    ;       var doc = '0 0 0 1 0 2 1 0 1 1 1 2 2 0 2 1 2 2';
+    ;       var dict = ngram.dict(doc.split(' '), GRAMSIZE);
 
-            var model = new MultinomialStudent(3, dict.length);
+    ;       var model = new MultinomialStudent(3, dict.length);
 
             function predict() {
 
-                var feats = ngram.features(hist.slice(0, GRAMSIZE), dict, GRAMSIZE);
-                var guess = model.classify(feats);
+    ;           var feats = ngram.features(hist.slice(0, GRAMSIZE), dict, GRAMSIZE);
+    ;           var guess = model.classify(feats);
 
                 return chooseOpposing(guess);
 
@@ -95,9 +100,9 @@
 
                 score(me, them);
 
-                var feats = ngram.features(hist.slice(0, GRAMSIZE), dict, GRAMSIZE);
-                model.update(them, feats);
-                hist.unshift(them);
+    ;           var feats = ngram.features(hist.slice(0, GRAMSIZE), dict, GRAMSIZE);
+    ;           model.update(them, feats);
+    ;           hist.unshift(them);
             }
 
             /* END ML STUFF */
@@ -163,7 +168,9 @@
 
     <body>
 
+        <span id="cWins">0</span>
         <a id="reveal" onclick="reveal(); return false;" href="#">reveal</a>
+        <span id="hWins">0</span>
 
         <br />
 
@@ -171,10 +178,6 @@
         <a id="paper" onmousedown="play(1); return false;" href="#">paper</a>
         <a id="scissors" onmousedown="play(2); return false;" href="#">scissors</a>
 
-        <br />
-
-        <span id="cWins">0</span>
-        <span id="hWins">0</span>
 
     </body>
 </html>
